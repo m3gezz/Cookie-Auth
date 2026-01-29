@@ -22,8 +22,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { signUp } from "@/zodSchemas/authentication";
 import api from "@/api/axios";
+import { useDispatch } from "react-redux";
+import { setAuth } from "@/redux/userSlice";
 
 export default function SignUp() {
+  const disp = useDispatch();
+
   const {
     control,
     handleSubmit,
@@ -43,7 +47,7 @@ export default function SignUp() {
     try {
       await api.get("sanctum/csrf-cookie");
       const res = await api.post("api/sign-up", data);
-      console.log(res);
+      res && disp(setAuth(res?.data?.user));
     } catch (err) {
       const errors = err.response.data.errors;
       for (const field in errors) {
