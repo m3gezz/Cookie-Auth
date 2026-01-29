@@ -18,6 +18,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { signIn } from "@/zodSchemas/authentication";
@@ -46,7 +47,11 @@ export default function SignIn() {
       await api.get("sanctum/csrf-cookie");
       const res = await api.post("api/sign-in", data);
       res && disp(setAuth(res?.data?.user));
+
+      toast.success("Signed In successfully");
     } catch (err) {
+      toast.error("Something went wrong");
+
       const errors = err.response.data.errors;
       for (const field in errors) {
         setError(field, {
@@ -59,6 +64,7 @@ export default function SignIn() {
 
   return (
     <>
+      {toast.promise("Loading...")}
       <Card className=" md:max-w-xl mx-auto">
         <CardHeader>
           <CardTitle>Sign in to your account</CardTitle>
@@ -120,13 +126,7 @@ export default function SignIn() {
                 )}
               />
               <Button disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    Login In... <Spinner />
-                  </>
-                ) : (
-                  "Sign In"
-                )}
+                {isSubmitting ? <Spinner /> : "Sign In"}
               </Button>
 
               <div className="flex items-center -my-4">
@@ -136,13 +136,7 @@ export default function SignIn() {
               </div>
 
               <Button variant="secondary" type="button" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    Login In... <Spinner />
-                  </>
-                ) : (
-                  "Continue With Google"
-                )}
+                {isSubmitting ? <Spinner /> : "Continue With Google"}
               </Button>
             </FieldGroup>
           </form>
