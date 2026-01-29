@@ -15,14 +15,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { signIn } from "@/zodSchemas/authentication";
+import api from "@/api/axios";
 
 export default function SignIn() {
-  const form = useForm({
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: {
       email: "",
       password: "",
@@ -30,8 +37,20 @@ export default function SignIn() {
     resolver: zodResolver(signIn),
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      await api.get("sanctum/csrf-cookie");
+      const res = await api.post("api/sign-in", data);
+      console.log(res);
+    } catch (err) {
+      const errors = err.response.data.errors;
+      for (const field in errors) {
+        setError(field, {
+          type: "server",
+          message: errors[field][0],
+        });
+      }
+    }
   };
 
   return (
@@ -49,12 +68,12 @@ export default function SignIn() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Controller
                 type="email"
                 name="email"
-                control={form.control}
+                control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>Email</FieldLabel>
@@ -73,7 +92,7 @@ export default function SignIn() {
               />
               <Controller
                 name="password"
-                control={form.control}
+                control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <div className="flex justify-between">
@@ -96,7 +115,15 @@ export default function SignIn() {
                   </Field>
                 )}
               />
-              <Button>Sign In</Button>
+              <Button disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    Login In... <Spinner />
+                  </>
+                ) : (
+                  "Sign In"
+                )}
+              </Button>
 
               <div className="flex items-center -my-4">
                 <div className="grow border-t border-gray-300"></div>
@@ -104,8 +131,14 @@ export default function SignIn() {
                 <div className="grow border-t border-gray-300"></div>
               </div>
 
-              <Button variant="secondary" type="button">
-                Continue With Google
+              <Button variant="secondary" type="button" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    Login In... <Spinner />
+                  </>
+                ) : (
+                  "Continue With Google"
+                )}
               </Button>
             </FieldGroup>
           </form>

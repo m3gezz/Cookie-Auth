@@ -15,14 +15,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { signUp } from "@/zodSchemas/authentication";
+import api from "@/api/axios";
 
 export default function SignUp() {
-  const form = useForm({
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: {
       username: "",
       email: "",
@@ -32,8 +39,20 @@ export default function SignUp() {
     resolver: zodResolver(signUp),
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      await api.get("sanctum/csrf-cookie");
+      const res = await api.post("api/sign-up", data);
+      console.log(res);
+    } catch (err) {
+      const errors = err.response.data.errors;
+      for (const field in errors) {
+        setError(field, {
+          type: "server",
+          message: errors[field][0],
+        });
+      }
+    }
   };
 
   return (
@@ -51,11 +70,11 @@ export default function SignUp() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Controller
                 name="username"
-                control={form.control}
+                control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>Username</FieldLabel>
@@ -64,7 +83,7 @@ export default function SignUp() {
                       id={field.name}
                       aria-invalid={fieldState.invalid}
                       placeholder="Enter Your Username"
-                      autoComplete="off"
+                      autoComplete="on"
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -75,7 +94,7 @@ export default function SignUp() {
               <Controller
                 type="email"
                 name="email"
-                control={form.control}
+                control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>Email</FieldLabel>
@@ -84,7 +103,7 @@ export default function SignUp() {
                       id={field.name}
                       aria-invalid={fieldState.invalid}
                       placeholder="Enter Your Email"
-                      autoComplete="off"
+                      autoComplete="on"
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -94,7 +113,7 @@ export default function SignUp() {
               />
               <Controller
                 name="password"
-                control={form.control}
+                control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>Password</FieldLabel>
@@ -114,7 +133,7 @@ export default function SignUp() {
               />
               <Controller
                 name="password_confirmation"
-                control={form.control}
+                control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>
@@ -134,7 +153,15 @@ export default function SignUp() {
                   </Field>
                 )}
               />
-              <Button>Sign Up</Button>
+              <Button disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    Registering... <Spinner />
+                  </>
+                ) : (
+                  "Sign Up"
+                )}
+              </Button>
 
               <div className="flex items-center -my-4">
                 <div className="grow border-t border-gray-300"></div>
@@ -142,8 +169,14 @@ export default function SignUp() {
                 <div className="grow border-t border-gray-300"></div>
               </div>
 
-              <Button variant="secondary" type="button">
-                Continue With Google
+              <Button variant="secondary" type="button" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    Registering... <Spinner />
+                  </>
+                ) : (
+                  "Continue With Google"
+                )}
               </Button>
             </FieldGroup>
           </form>
