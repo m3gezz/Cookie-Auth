@@ -25,6 +25,7 @@ import { signIn } from "@/zodSchemas/authentication";
 import api from "@/api/axios";
 import { useDispatch } from "react-redux";
 import { setAuth } from "@/redux/userSlice";
+import { Chrome } from "lucide-react";
 
 export default function SignIn() {
   const disp = useDispatch();
@@ -135,7 +136,7 @@ export default function SignIn() {
               </div>
 
               <Button variant="secondary" type="button" disabled={isSubmitting}>
-                Continue With Google
+                Continue With Google <Chrome />
               </Button>
             </FieldGroup>
           </form>

@@ -27,6 +27,17 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 // Resend the verification email
 Route::post('api/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return response()->json(['message' => 'Verification link sent!']);
+    $user = $request->user();
+
+    if ($user->hasVerifiedEmail()) {
+        return response()->json([
+            'message' => 'Email is already verified.'
+        ], 409);
+    }
+
+    $user->sendEmailVerificationNotification();
+
+    return response()->json([
+        'message' => 'Verification link sent!'
+    ]);
 })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');

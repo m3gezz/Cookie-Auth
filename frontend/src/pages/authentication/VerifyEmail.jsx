@@ -42,9 +42,18 @@ export default function VerifyEmail() {
 
     try {
       await api.post("api/email/verification-notification");
+
       toast.success("Email verification link was sent successfully");
       setCoolDown(30);
     } catch (err) {
+      if (err.response?.status === 409) {
+        toast.success("Email is already verified");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+        return;
+      }
+
       toast.error("Something went wrong");
     } finally {
       setLoading((prev) => ({ ...loading, link: false }));

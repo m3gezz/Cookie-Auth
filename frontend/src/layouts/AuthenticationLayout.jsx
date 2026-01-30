@@ -9,7 +9,7 @@ export default function AuthenticationLayout() {
   if (isAuthenticated) return <Navigate to={"/"} />;
 
   return (
-    <main className="h-screen flex items-center justify-center">
+    <main className="h-screen flex items-center justify-center my-10">
       <Outlet />
     </main>
   );
