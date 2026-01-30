@@ -14,11 +14,13 @@ const slice = createSlice({
         isAuthenticated: true,
         user: action.payload,
       }),
-    removeAuth: (state) =>
-      (state = {
+    removeAuth: (state) => {
+      localStorage.setItem("emailCoolDown", 0);
+      return (state = {
         isAuthenticated: false,
         user: {},
-      }),
+      });
+    },
   },
 });
 

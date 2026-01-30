@@ -7,6 +7,8 @@ export default function UserLayout() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
 
   if (!isAuthenticated) return <Navigate to={"/authentication"} />;
+  if (isAuthenticated && !user.email_verified_at)
+    return <Navigate to={"/verify-email"} />;
   if (isAuthenticated && user.admin) return <Navigate to={"/administration"} />;
 
   return (

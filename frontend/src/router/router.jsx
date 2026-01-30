@@ -4,6 +4,7 @@ import Home from "@/pages/user/Home";
 import AuthenticationLayout from "@/layouts/AuthenticationLayout";
 import SignIn from "@/pages/authentication/SignIn";
 import SignUp from "@/pages/authentication/SignUp";
+import VerifyEmail from "../pages/authentication/VerifyEmail";
 import AdministrationLayout from "@/layouts/AdministrationLayout";
 import Dashboard from "@/pages/administration/Dashboard";
 import NotFound from "@/pages/other/NotFound";
@@ -42,6 +43,10 @@ const routes = [
         element: <Dashboard />,
       },
     ],
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmail />,
   },
   {
     path: "*",

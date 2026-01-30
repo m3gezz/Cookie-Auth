@@ -21,6 +21,8 @@ class AuthController extends Controller
 
         Auth::login($user);
 
+        $user->sendEmailVerificationNotification();
+
         return response()->json(['user' => $user], 201);
     }
 

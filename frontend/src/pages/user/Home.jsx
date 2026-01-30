@@ -8,7 +8,7 @@ export default function Home() {
   const { user } = useSelector((state) => state.user);
   const disp = useDispatch();
 
-  const logOut = async () => {
+  const signOut = async () => {
     try {
       const res = await api.post("api/sign-out");
       res && disp(removeAuth());
@@ -20,7 +20,8 @@ export default function Home() {
 
   return (
     <div>
-      {user.username} <button onClick={logOut}>log out</button>
+      {user.email_verified_at} {user.username}{" "}
+      <button onClick={signOut}>log out</button>
     </div>
   );
 }
