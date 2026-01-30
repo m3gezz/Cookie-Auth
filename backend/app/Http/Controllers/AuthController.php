@@ -15,8 +15,6 @@ class AuthController extends Controller
             'username' => ['required','min:3','max:20','regex:/^[a-zA-Z0-9_]+$/', 'unique:users,username'],
             'email' => ['required','email','unique:users,email'],
             'password' => ['required','confirmed',Password::min(8)->mixedCase()->numbers()],
-        ],[
-            'username.regex' => 'Username can only contain letters, numbers, and underscores',
         ]);
 
         $user = User::create($fields);

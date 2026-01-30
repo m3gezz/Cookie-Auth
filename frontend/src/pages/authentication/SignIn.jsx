@@ -64,8 +64,7 @@ export default function SignIn() {
 
   return (
     <>
-      {toast.promise("Loading...")}
-      <Card className=" md:max-w-xl mx-auto">
+      <Card className="w-full md:w-xl">
         <CardHeader>
           <CardTitle>Sign in to your account</CardTitle>
           <CardDescription>
@@ -136,7 +135,7 @@ export default function SignIn() {
               </div>
 
               <Button variant="secondary" type="button" disabled={isSubmitting}>
-                {isSubmitting ? <Spinner /> : "Continue With Google"}
+                Continue With Google
               </Button>
             </FieldGroup>
           </form>

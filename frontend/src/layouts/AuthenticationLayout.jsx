@@ -1,6 +1,5 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import Header from "@/slices/authentication/Header";
 import { useSelector } from "react-redux";
 
 export default function AuthenticationLayout() {
@@ -10,9 +9,8 @@ export default function AuthenticationLayout() {
   if (isAuthenticated) return <Navigate to={"/"} />;
 
   return (
-    <>
-      <Header />
+    <main className="h-screen flex items-center justify-center">
       <Outlet />
-    </>
+    </main>
   );
 }

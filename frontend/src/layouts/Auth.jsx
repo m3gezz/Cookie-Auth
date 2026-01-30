@@ -3,6 +3,7 @@ import api from "@/api/axios";
 import { useDispatch } from "react-redux";
 import { setAuth } from "@/redux/userSlice";
 import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 export default function Auth({ children }) {
   const [loading, setLoading] = useState(false);
@@ -22,5 +23,20 @@ export default function Auth({ children }) {
     fetchMe();
   }, []);
 
-  return <>{loading ? <Spinner /> : children}</>;
+  return (
+    <>
+      {loading ? (
+        <Button
+          disabled
+          size="sm"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        >
+          <Spinner data-icon="inline-start" />
+          Looking for accounts
+        </Button>
+      ) : (
+        children
+      )}
+    </>
+  );
 }

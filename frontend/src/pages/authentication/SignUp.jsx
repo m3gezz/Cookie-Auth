@@ -66,7 +66,7 @@ export default function SignUp() {
 
   return (
     <>
-      <Card className=" md:max-w-xl mx-auto">
+      <Card className="w-full md:w-xl">
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
           <CardDescription>
@@ -173,7 +173,7 @@ export default function SignUp() {
               </div>
 
               <Button variant="secondary" type="button" disabled={isSubmitting}>
-                {isSubmitting ? <Spinner /> : "Continue With Google"}
+                Continue With Google
               </Button>
             </FieldGroup>
           </form>
